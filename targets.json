@@ -1,0 +1,57 @@
+[
+  {
+    "file": "apps/web/src/App.jsx",
+    "predicted_lines_by_constitution": 140,
+    "required_lines_for_perfection": 140
+  },
+  {
+    "file": "apps/web/src/components/CheckoutForm.jsx",
+    "predicted_lines_by_constitution": 110,
+    "required_lines_for_perfection": 110
+  },
+  {
+    "file": "apps/web/public/index.html",
+    "predicted_lines_by_constitution": 40,
+    "required_lines_for_perfection": 40
+  },
+  {
+    "file": "apps/web/src/styles/theme.css",
+    "predicted_lines_by_constitution": 120,
+    "required_lines_for_perfection": 120
+  },
+  {
+    "file": "apps/api/src/index.mjs",
+    "predicted_lines_by_constitution": 150,
+    "required_lines_for_perfection": 150
+  },
+  {
+    "file": "apps/api/src/routes/checkout.mjs",
+    "predicted_lines_by_constitution": 120,
+    "required_lines_for_perfection": 120
+  },
+  {
+    "file": "apps/api/src/routes/webhook.mjs",
+    "predicted_lines_by_constitution": 140,
+    "required_lines_for_perfection": 140
+  },
+  {
+    "file": "config/app.yaml",
+    "predicted_lines_by_constitution": 12,
+    "required_lines_for_perfection": 12
+  },
+  {
+    "file": "data/mock/payment_intents.jsonl",
+    "predicted_lines_by_constitution": 5,
+    "required_lines_for_perfection": 5
+  },
+  {
+    "file": "docs/README.md",
+    "predicted_lines_by_constitution": 24,
+    "required_lines_for_perfection": 24
+  },
+  {
+    "file": "tests/local/webhook_example.json",
+    "predicted_lines_by_constitution": 50,
+    "required_lines_for_perfection": 50
+  }
+]

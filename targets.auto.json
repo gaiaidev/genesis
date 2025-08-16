@@ -1,0 +1,63 @@
+{
+  "mode": "dynamic",
+  "project": "my-genesis-project",
+  "scale": "medium",
+  "profiles": [
+    "web_saas",
+    "backend_api"
+  ],
+  "modules": [
+    "apps/web",
+    "packages/ui",
+    "packages/i18n",
+    "packages/feature-flags",
+    "packages/notifications",
+    "apps/web/tests",
+    "apps/api",
+    "packages/core",
+    "packages/auth",
+    "packages/payments",
+    "packages/ops-sre",
+    "apps/api/tests",
+    "apps/admin"
+  ],
+  "approximate_files": 296,
+  "generation_rules": {
+    "prefer_tests": true,
+    "require_lint_typecheck": true,
+    "disallow_padding": true,
+    "enforce_real_endpoints": true
+  },
+  "acceptance_criteria": [
+    {
+      "id": "api.health.200",
+      "for": "apps/api",
+      "type": "e2e",
+      "mustPass": true
+    },
+    {
+      "id": "auth.flow.basic",
+      "for": "packages/auth",
+      "type": "unit",
+      "mustPass": true
+    },
+    {
+      "id": "ui.lint.strict",
+      "for": "packages/ui",
+      "type": "lint",
+      "mustPass": true
+    },
+    {
+      "id": "types.ok",
+      "for": "*",
+      "type": "typecheck",
+      "mustPass": true
+    },
+    {
+      "id": "perf.p95",
+      "for": "apps/api",
+      "type": "perf",
+      "thresholdMs": 200
+    }
+  ]
+}

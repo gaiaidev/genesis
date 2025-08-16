@@ -1,0 +1,26 @@
+{
+  "name": "genesis-clean-core",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "node apps/api/src/index.mjs",
+    "compose": "node apps/composer/compose.mjs",
+    "validate": "node scripts/validate_api.mjs",
+    "guard:anti-fake": "bash scripts/anti-fake-guard.sh",
+    "guard:no-padding": "bash scripts/no-padding-audit.sh . logs/no_padding.log",
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:cov": "vitest run --coverage"
+  },
+  "devDependencies": {
+    "@types/node": "^22.5.0",
+    "eslint": "^9.6.0",
+    "typescript": "^5.5.4",
+    "vitest": "^2.0.5",
+    "@vitest/coverage-v8": "^2.0.5"
+  },
+  "dependencies": {
+    "express": "^4.19.2"
+  }
+}
