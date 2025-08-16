@@ -16,3 +16,4 @@ targets_strict.json
 # tiny config & generated
 tests/smoke.spec.ts
 vitest.config.mjs
+.github/ISSUE_TEMPLATE/
