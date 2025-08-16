@@ -21,34 +21,34 @@ class PRNG {
   constructor(seed = 1337) {
     this.m = 0x80000000; this.a = 1103515245; this.c = 12345; this.state = seed >>> 0;
   }
-  nextInt() { this.state = (this.a * this.state + this.c) % this.m; return this.state; }
-  nextFloat() { return this.nextInt() / (this.m - 1); }
-  pick(arr) { return arr[Math.floor(this.nextFloat() * arr.length)]; }
+  nextInt() { this.state = (this.a * this.state + this.c) % this.m; return this.state }
+  nextFloat() { return this.nextInt() / (this.m - 1) }
+  pick(arr) { return arr[Math.floor(this.nextFloat() * arr.length)] }
 }
 
 const rng = new PRNG(DETERMINISM.seed);
-function nowIso() { return "2025-01-01T00:00:00Z"; }
-async function ensureDir(p) { await fs.mkdir(p, { recursive: true }); }
-async function fileExists(p) { try { await fs.stat(p); return true; } catch { return false; } }
-function sha256(buf) { return crypto.createHash('sha256').update(buf).digest('hex'); }
-function toSafeReportName(relPath) { return relPath.replace(/[^a-zA-Z0-9._-]+/g, '_'); }
-async function appendJSONL(filePath, obj) { await ensureDir(path.dirname(filePath)); await fs.appendFile(filePath, JSON.stringify(obj) + "\n", 'utf8'); }
-async function readJSON(p, def = null) { try { return JSON.parse(await fs.readFile(p, 'utf8')); } catch { return def; } }
+function nowIso() { return "2025-01-01T00:00:00Z" }
+async function ensureDir(p) { await fs.mkdir(p, { recursive: true }) }
+async function fileExists(p) { try { await fs.stat(p); return true } catch { return false } }
+function sha256(buf) { return crypto.createHash('sha256').update(buf).digest('hex') }
+function toSafeReportName(relPath) { return relPath.replace(/[^a-zA-Z0-9._-]+/g, '_') }
+async function appendJSONL(filePath, obj) { await ensureDir(path.dirname(filePath)); await fs.appendFile(filePath, JSON.stringify(obj) + "\n", 'utf8') }
+async function readJSON(p, def = null) { try { return JSON.parse(await fs.readFile(p, 'utf8')) } catch { return def } }
 
 async function loadConstitution(jsonlPath) {
   const text = await fs.readFile(jsonlPath, 'utf8');
   const rules = [];
-  for (const line of text.split(/\r?\n/)) { if (!line.trim()) continue; rules.push(JSON.parse(line)); }
+  for (const line of text.split(/\r?\n/)) { if (!line.trim()) continue; rules.push(JSON.parse(line)) }
   return rules;
 }
 
 async function loadLineTargets(targetPath) {
   const ext = path.extname(targetPath).toLowerCase();
   const base = targetPath.replace(/\.(xlsx|csv|json)$/i, '');
-  if (await fileExists(base + '.json')) { return normalizeTargets(JSON.parse(await fs.readFile(base + '.json', 'utf8'))); }
-  if (await fileExists(base + '.csv'))  { return parseCsv(await fs.readFile(base + '.csv', 'utf8')); }
+  if (await fileExists(base + '.json')) { return normalizeTargets(JSON.parse(await fs.readFile(base + '.json', 'utf8'))) }
+  if (await fileExists(base + '.csv'))  { return parseCsv(await fs.readFile(base + '.csv', 'utf8')) }
   if (ext === '.xlsx' && await fileExists(targetPath)) {
-    let xlsx = null; try { xlsx = (await import('xlsx')).default; } catch (e) { throw new Error("Install 'xlsx' or provide .json/.csv"); }
+    let xlsx = null; try { xlsx = (await import('xlsx')).default } catch (e) { throw new Error("Install 'xlsx' or provide .json/.csv") }
     const wb = xlsx.read(await fs.readFile(targetPath)); const ws = wb.Sheets[wb.SheetNames[0]]; const arr = xlsx.utils.sheet_to_json(ws, { defval: '' });
     return normalizeTargets(arr);
   }
@@ -61,7 +61,7 @@ function parseCsv(csv) {
   return normalizeTargets(rows.map(r => ({ file: r[hi['file']].trim(), predicted_lines_by_constitution: Number(r[hi['predicted_lines_by_constitution']]), required_lines_for_perfection: Number(r[hi['required_lines_for_perfection']]) })));
 }
 
-function normalizeTargets(arr) { return arr.map(row => ({ file: row.file, predicted: Number(row.predicted_lines_by_constitution || row.predicted_lines || row.predicted || 0), required: Number(row.required_lines_for_perfection || row.required_lines || row.required || row.predicted || 0) })); }
+function normalizeTargets(arr) { return arr.map(row => ({ file: row.file, predicted: Number(row.predicted_lines_by_constitution || row.predicted_lines || row.predicted || 0), required: Number(row.required_lines_for_perfection || row.required_lines || row.required || row.predicted || 0) })) }
 
 function getMinLines(ext) {
   const minimums = {
@@ -187,7 +187,7 @@ function genDeterministicContent(relPath, targetLines, constitution) {
   return lines.join('\n')+'\n';
 }
 
-function isZeroLine(relPath) { return ['logs/run.jsonl','ledger/full_log_master.json','artifacts/checkpoints/latest.json'].includes(relPath); }
+function isZeroLine(relPath) { return ['logs/run.jsonl','ledger/full_log_master.json','artifacts/checkpoints/latest.json'].includes(relPath) }
 
 async function writeIfChanged(absPath, content) {
   try { const prev = await fs.readFile(absPath); if (sha256(prev)===sha256(Buffer.from(content))) return false; } catch {/* no prev */}
@@ -203,12 +203,12 @@ async function writeEvidence(relPath, lines, changed, ok, guardReport) {
 
 async function updateLedger(step) {
   const ledgerPath = 'ledger/full_log_master.json'; await ensureDir(path.dirname(ledgerPath));
-  let data; try { data = JSON.parse(await fs.readFile(ledgerPath,'utf8')); } catch { data = { steps: [] }; }
+  let data; try { data = JSON.parse(await fs.readFile(ledgerPath,'utf8')) } catch { data = { steps: [] } }
   data.steps.push({ ts: nowIso(), ...step }); await fs.writeFile(ledgerPath, JSON.stringify(data, null, 2));
 }
 
-async function updateCheckpoint(meta) { const cp = 'artifacts/checkpoints/latest.json'; await ensureDir(path.dirname(cp)); await fs.writeFile(cp, JSON.stringify({ ts: nowIso(), ...meta }, null, 2)); }
-async function appendRun(event, meta) { await ensureDir('logs'); await fs.appendFile('logs/run.jsonl', JSON.stringify({ ts: nowIso(), event, ...meta })+'\n', 'utf8'); }
+async function updateCheckpoint(meta) { const cp = 'artifacts/checkpoints/latest.json'; await ensureDir(path.dirname(cp)); await fs.writeFile(cp, JSON.stringify({ ts: nowIso(), ...meta }, null, 2)) }
+async function appendRun(event, meta) { await ensureDir('logs'); await fs.appendFile('logs/run.jsonl', JSON.stringify({ ts: nowIso(), event, ...meta })+'\n', 'utf8') }
 
 async function runAuthoringGuard(relPath, content, predicted, required) {
   const { validateContent } = await import('./authoring_guard.mjs');
@@ -221,7 +221,7 @@ function calcScore(guardPassCount, total) {
 }
 
 export class AuthoringOrchestrator {
-  constructor(constitutionPath, lineTargetsPath, profile) { this.constitutionPath = constitutionPath; this.lineTargetsPath = lineTargetsPath; this.profile = profile || 'default'; }
+  constructor(constitutionPath, lineTargetsPath, profile) { this.constitutionPath = constitutionPath; this.lineTargetsPath = lineTargetsPath; this.profile = profile || 'default' }
   async generate() {
     await appendRun('start', { profile: this.profile, isDryRun: this.isDryRun, subsetCount: this.subsetCount });
     const rules = await loadConstitution(this.constitutionPath);
@@ -278,7 +278,7 @@ export class AuthoringOrchestrator {
     let pass=0,total=0;
     for (const t of targets) {
       const rel=t.file, predicted=t.predicted, required=t.required;
-      if (isZeroLine(rel)) { await appendRun('skip_zero_line', { file: rel }); continue; }
+      if (isZeroLine(rel)) { await appendRun('skip_zero_line', { file: rel }); continue }
       
       // Minimum satır kontrolü - yapısal minimuma uyumla
       const ext = path.extname(rel).toLowerCase();
@@ -333,5 +333,5 @@ if (import.meta.url === url.pathToFileURL(process.argv[1]).href) {
   orch.isDryRun = isDryRun;
   orch.subsetCount = subsetCount;
   
-  orch.generate().catch(async (e)=>{ await appendRun('error', { message: e.message }); console.error(e); process.exit(1); });
+  orch.generate().catch(async (e)=>{ await appendRun('error', { message: e.message }); console.error(e); process.exit(1) });
 }

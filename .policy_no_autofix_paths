@@ -1,0 +1,4 @@
+apps/composer/**
+constitution*.jsonl
+scripts/**
+.github/workflows/**

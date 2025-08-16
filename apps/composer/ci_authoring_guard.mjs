@@ -9,7 +9,7 @@ import { validateContent } from './authoring_guard.mjs';
 
 const args = new Set(process.argv.slice(2));
 
-async function walk(dir){ const out=[]; for(const e of await fs.readdir(dir,{withFileTypes:true})){ const p=path.join(dir,e.name); if(e.isDirectory()) out.push(...await walk(p)); else out.push(p);} return out; }
+async function walk(dir){ const out=[]; for(const e of await fs.readdir(dir,{withFileTypes:true})){ const p=path.join(dir,e.name); if(e.isDirectory()) out.push(...await walk(p)); else out.push(p);} return out }
 
 const ZERO=new Set(['logs/run.jsonl','ledger/full_log_master.json','artifacts/checkpoints/latest.json']);
 
@@ -57,7 +57,7 @@ async function loadTargets() {
     const required = target ? Math.max(target.required, predicted) : Math.max(lines, 1);
     
     const rep=await validateContent({ relPath:rel, content, predicted, required });
-    if(!rep.ok){ fail++; console.error('GUARD FAIL:', rel, rep); } else ok++;
+    if(!rep.ok){ fail++; console.error('GUARD FAIL:', rel, rep) } else ok++;
     details.push({ file: rel, ok: rep.ok, guard: rep });
     
     if (content) {
@@ -98,4 +98,4 @@ async function loadTargets() {
   
   if (fail) process.exit(1);
   else process.exit(0);
-})().catch(e=>{ console.error(e); process.exit(1); });
+})().catch(e=>{ console.error(e); process.exit(1) });

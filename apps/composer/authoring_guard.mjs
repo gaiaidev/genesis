@@ -5,15 +5,15 @@ import crypto from 'node:crypto';
 import path from 'node:path';
 
 const BANNED = [/\bshould\b/i, /\bprobably\b/i, /\bmaybe\b/i];
-function sha256(s) { return crypto.createHash('sha256').update(s).digest('hex'); }
+function sha256(s) { return crypto.createHash('sha256').update(s).digest('hex') }
 function countLines(s){
   if (!s) return 0;
   const a = s.split(/\r?\n/);
   return (a.length && a[a.length-1]==='') ? (a.length-1) : a.length;
 }
-function hasBannedWords(s){ return BANNED.some(rx=>rx.test(s)); }
-function checkEvidencePaths(s){ const m=s.match(/artifacts\/[A-Za-z0-9._/-]+/g)||[]; return m.every(p=>p.startsWith('artifacts/')); }
-function maybeJsonParse(s){ try{ return JSON.parse(s); }catch{return null;} }
+function hasBannedWords(s){ return BANNED.some(rx=>rx.test(s)) }
+function checkEvidencePaths(s){ const m=s.match(/artifacts\/[A-Za-z0-9._/-]+/g)||[]; return m.every(p=>p.startsWith('artifacts/')) }
+function maybeJsonParse(s){ try{ return JSON.parse(s) }catch{return null} }
 
 function densityOk(content, ext){
   const lines = content.split(/\r?\n/);
@@ -64,14 +64,14 @@ function structuralOk(relPath, content){
       // Array ise başarılı, obje ise type/version kontrolü
       if (Array.isArray(o)) return true;
       return !!(o && typeof o==='object' && o.type && o.version);
-    }catch{ return false; }
+    }catch{ return false }
   }
   // .jsonl → tüm DOLU satırlar JSON olmalı
   if (ext === '.jsonl'){
     const lines = s.split(/\r?\n/).filter(Boolean);
     if (lines.length === 0) return false;
     for (const ln of lines){
-      try{ JSON.parse(ln); } catch { return false; }
+      try{ JSON.parse(ln) } catch { return false }
     }
     return true;
   }

@@ -1,0 +1,1 @@
+npm run -s ci:lint && npm run -s ci:typecheck && vitest run -t smoke

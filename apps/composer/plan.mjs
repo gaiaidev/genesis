@@ -35,7 +35,7 @@ const SCALE = {
   enterprise:  { baseFiles: 640, perModule: 28 }
 };
 
-function uniq(arr){ return [...new Set(arr)]; }
+function uniq(arr){ return [...new Set(arr)] }
 
 const selectedProfiles = cfg.profile || [];
 let modules = [];

@@ -1,0 +1,10 @@
+build/
+dist/
+out/
+coverage/
+logs/
+artifacts/
+evidence/
+.quarantine/
+*.log
+node_modules/

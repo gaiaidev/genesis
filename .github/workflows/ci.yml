@@ -1,0 +1,22 @@
+name: CI
+on:
+  push: { branches: [ "main" ] }
+  pull_request: { branches: [ "main" ] }
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: '20', cache: 'npm' }
+      - run: npm ci || npm install
+      - name: Start API & Wait
+        run: |
+          node apps/api/src/index.mjs & echo $! > api_pid.txt
+          for i in {1..15}; do curl -fsS http://localhost:3002/health && break || sleep 1; done
+      - run: npm run ci:all
+      - name: Policy – No Autofix
+        run: node scripts/ci_no_autofix_check.mjs
+      - name: Stop API
+        if: always()
+        run: kill $(cat api_pid.txt) || true

@@ -18,8 +18,8 @@ const requiredFiles = [
   "docs/API_SPEC.md"
 ];
 
-function fail(msg) { console.error("✖", msg); process.exit(1); }
-function ok(msg)   { console.log("✔", msg); }
+function fail(msg) { console.error("✖", msg); process.exit(1) }
+function ok(msg)   { console.log("✔", msg) }
 
 for (const f of requiredFiles) {
   if (!existsSync(path.join(ROOT, f))) fail(`missing required file: ${f}`);
@@ -45,7 +45,7 @@ function healthCheck() {
   ok("Health check passed (curl)");
   return true;
 }
-if (healthCheck()) { passed++; }
+if (healthCheck()) { passed++ }
 
 /* 2) API spec presence */
 const spec = readFileSync(path.join(ROOT, "docs/API_SPEC.md"), "utf8");
@@ -66,14 +66,14 @@ if (existsSync(constitutionPath)) {
 
 /* 4) Composer sanity (compose.mjs/authoring_guard.mjs exist?) */
 const composerOK = ["compose.mjs","authoring_guard.mjs"].every(f=>existsSync(path.join(ROOT,"apps/composer",f)));
-if (composerOK) { ok("Composer files present"); passed++; }
-else { fail("Composer files missing (compose.mjs/authoring_guard.mjs)"); }
+if (composerOK) { ok("Composer files present"); passed++ }
+else { fail("Composer files missing (compose.mjs/authoring_guard.mjs)") }
 
 /* 5) Evidence checks from evidence_plan.jsonl */
 function readJSONSafe(p) {
-  try { return JSON.parse(readFileSync(p, "utf8")); } catch { return null; }
+  try { return JSON.parse(readFileSync(p, "utf8")) } catch { return null }
 }
-function contains(txt, needle){ return (txt||"").includes(needle); }
+function contains(txt, needle){ return (txt||"").includes(needle) }
 function get(obj, pathStr) {
   if (!obj || typeof obj !== "object") return undefined;
   return pathStr.split('.').reduce((o,k)=> (o && o[k]!=null) ? o[k] : undefined, obj);

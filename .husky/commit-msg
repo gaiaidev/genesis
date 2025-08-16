@@ -1,0 +1,20 @@
+
+MSG_FILE="$1"
+CHANGED="$(git diff --cached --name-only || true)"
+POLICY_FILE=".policy_no_autofix_paths"
+
+need_approval=0
+if [ -f "$POLICY_FILE" ]; then
+  while IFS= read -r pat; do
+    [ -z "$pat" ] && continue
+    echo "$CHANGED" | grep -E "^$(echo "$pat" | sed 's/\./\\./g; s/\*/.*?/g')" >/dev/null 2>&1 && need_approval=1 && break
+  done < "$POLICY_FILE"
+fi
+
+if [ "$need_approval" = "1" ]; then
+  if ! grep -qiE '^Approved-By:\s+.+' "$MSG_FILE"; then
+    echo "❌ Commit blocked: Protected paths changed but no 'Approved-By: <name>' in commit message."
+    echo "   Add a trailer, e.g.:  Approved-By: Senin Adın"
+    exit 1
+  fi
+fi

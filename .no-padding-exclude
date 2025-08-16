@@ -1,0 +1,18 @@
+build/
+node_modules/
+artifacts/
+logs/
+.quarantine/
+tests/fixtures/
+templates/
+package-lock.json
+coverage/
+coverage/**
+scripts/genesis_phase2_*.sh
+genesis_phase2_*.sh
+*.sh
+targets.json
+targets_strict.json
+# tiny config & generated
+tests/smoke.spec.ts
+vitest.config.mjs
