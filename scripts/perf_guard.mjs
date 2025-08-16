@@ -1,6 +1,6 @@
 import { spawn } from "node:child_process";
 
-const PERF_TARGET = process.env.PERF_TARGET || "http://localhost:3002/health";
+const PERF_TARGET = process.env.PERF_URL || process.env.PERF_TARGET || "http://localhost:3002/health";
 const PERF_P95_MS = parseInt(process.env.P95_MS || "200", 10);
 const PERF_RUNS = parseInt(process.env.PERF_RUNS || "50", 10);
 const PERF_SPAWN = process.env.PERF_SPAWN !== "0"; // "0" ise spawn etme
