@@ -1,0 +1,11 @@
+name: Feature request
+description: Yeni özellik öner
+labels: [enhancement]
+body:
+  - type: textarea
+    id: value
+    attributes: { label: Neden gerekli?, placeholder: İş değeri / kullanım }
+    validations: { required: true }
+  - type: textarea
+    id: proposal
+    attributes: { label: Öneri, placeholder: Çözüm fikri }

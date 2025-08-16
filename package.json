@@ -18,7 +18,7 @@
     "ci:guards": "bash scripts/anti-fake-guard.sh && bash scripts/no-padding-audit.sh . logs/no_padding_ci.log",
     "ci:perf": "node scripts/perf_guard.mjs",
     "ci:all": "npm run ci:lint && npm run ci:typecheck && npm run ci:test && npm run ci:guards && npm run ci:perf",
-    "prepare": "husky install",
+    "prepare": "husky",
     "lint:fix": "eslint . --fix",
     "ci:lint:strict": "eslint . --max-warnings=0",
     "compose:safe": "GENESIS_OUTDIR=build/genesis_out bash scripts/compose_safe.sh",

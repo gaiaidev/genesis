@@ -1,0 +1,14 @@
+name: Bug report
+description: Bir hata bildir
+labels: [bug]
+body:
+  - type: textarea
+    id: what
+    attributes: { label: Ne oldu?, placeholder: Beklenen vs mevcut davranış }
+    validations: { required: true }
+  - type: textarea
+    id: steps
+    attributes: { label: Tekrarlama adımları, placeholder: 1..2..3.. }
+  - type: input
+    id: version
+    attributes: { label: Sürüm/commit }
