@@ -34,7 +34,7 @@ async function measureP95() {
   console.log(JSON.stringify({ samples: times.length, p95_ms: p95 }));
   
   if (p95 > PERF_P95_MS) {
-    console.error(\`❌ P95 (\${p95}ms) > limit (\${PERF_P95_MS}ms)\`);
+    console.error("❌ P95 (" + p95 + "ms) > limit (" + PERF_P95_MS + "ms)");
     process.exit(1);
   }
 }
