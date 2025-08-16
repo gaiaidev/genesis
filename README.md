@@ -21,3 +21,6 @@ npm run compose:safe   # çıktılar: build/genesis_out/
 ```bash
 npm run release:patch  # ci:all geçerse tag + GitHub Release
 ```
+
+## Branch Protection Test
+This PR tests the branch protection rules.
