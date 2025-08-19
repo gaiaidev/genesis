@@ -28,7 +28,7 @@
     "release:major": "npm run release:precheck && npm version major -m \"chore(release): v%s\" && git push && git push --tags"
   },
   "devDependencies": {
-    "@types/node": "^22.5.0",
+    "@types/node": "^24.3.0",
     "@vitest/coverage-v8": "^3.2.4",
     "eslint": "^9.6.0",
     "husky": "^9.1.7",
