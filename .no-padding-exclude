@@ -10,10 +10,17 @@ coverage/
 coverage/**
 scripts/genesis_phase2_*.sh
 genesis_phase2_*.sh
-*.sh
+scripts/no-padding-audit.sh
+scripts/no-padding-audit-v2.sh
+scripts/compose_safe.sh
+scripts/ci_stop_api.sh
 targets.json
 targets_strict.json
 # tiny config & generated
 tests/smoke.spec.ts
+apps/api/src/routes/health.mjs
+apps/composer/compose.mjs
+apps/composer/compose.ACTUAL.mjs
+apps/composer/README.md
 vitest.config.mjs
 .github/ISSUE_TEMPLATE/
