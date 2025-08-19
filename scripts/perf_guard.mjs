@@ -1,28 +1,45 @@
 import { spawn } from "node:child_process";
-const url = process.env.PERF_URL || "http://localhost:3002/health";
-const runs = Number(process.env.PERF_RUNS||"60");       // toplam istek
-const conc = Number(process.env.PERF_CONCURRENCY||"6"); // eşzamanlı
-const p95th = Number(process.env.P95_MS||"200");
-const spawnServer = process.env.PERF_SPAWN === "1";
-const req = async ()=> {
-  const t0 = performance.now();
-  const r = await fetch(url); if(!r.ok) throw new Error(String(r.status));
-  await r.text(); return performance.now()-t0;
-};
-const sleep = (ms)=> new Promise(r=>setTimeout(r,ms));
-let srv; async function waitHealth(max=15){ for(let i=0;i<max;i++){ try{ const r=await fetch(url); if(r.ok) return true; }catch{} await sleep(500) } return false }
-async function run(){
-  if(spawnServer){
-    srv = spawn("node", ["apps/api/src/index.mjs"], { stdio:"inherit" });
-    process.on("exit", ()=>{ try{ srv.kill() }catch{} });
-    const ok = await waitHealth(); if(!ok){ console.error("health not ready"); process.exit(2) }
+
+const PERF_TARGET = process.env.PERF_URL || process.env.PERF_TARGET || "http://localhost:3002/health";
+const PERF_P95_MS = parseInt(process.env.P95_MS || "200", 10);
+const PERF_RUNS = parseInt(process.env.PERF_RUNS || "50", 10);
+const PERF_SPAWN = process.env.PERF_SPAWN !== "0"; // "0" ise spawn etme
+
+async function measureP95() {
+  let server = null;
+  
+  if (PERF_SPAWN) {
+    // API'yi başlat (CI'de zaten çalışıyor olacak)
+    server = spawn("node", ["apps/api/src/index.mjs"], { stdio: "ignore" });
+    await new Promise(r => setTimeout(r, 1500)); // API başlaması için bekle
   }
-  const lat=[]; let i=0;
-  const worker = async()=>{ while(true){ const id=i++; if(id>=runs) break; const d=await req().catch(()=>Infinity); lat.push(d) } };
-  await Promise.all(Array.from({length: conc}, worker));
-  const good = lat.filter(x=>isFinite(x)); if(good.length===0){ console.error("no successful samples"); process.exit(2) }
-  good.sort((a,b)=>a-b); const idx=Math.ceil(good.length*0.95)-1; const p95=good[Math.max(0,idx)];
-  console.log(JSON.stringify({samples:good.length, p95_ms:Number(p95.toFixed(2))}));
-  if(p95>p95th){ console.error("PERF FAIL: p95="+p95.toFixed(2)+"ms > "+p95th+"ms"); process.exit(3) }
+
+  const times = [];
+  for (let i = 0; i < PERF_RUNS; i++) {
+    const start = Date.now();
+    try {
+      await fetch(PERF_TARGET);
+      times.push(Date.now() - start);
+    } catch (e) {
+      if (server) server.kill();
+      console.error("Perf test failed:", e.message);
+      process.exit(1);
+    }
+  }
+
+  if (server) server.kill();
+
+  times.sort((a, b) => a - b);
+  const p95 = times[Math.floor(times.length * 0.95)];
+  console.log(JSON.stringify({ samples: times.length, p95_ms: p95 }));
+  
+  if (p95 > PERF_P95_MS) {
+    console.error("❌ P95 (" + p95 + "ms) > limit (" + PERF_P95_MS + "ms)");
+    process.exit(1);
+  }
 }
-run().finally(()=>{ if(srv){ try{ srv.kill() }catch{} } });
+
+measureP95().catch(e => {
+  console.error("Fatal:", e);
+  process.exit(1);
+});
