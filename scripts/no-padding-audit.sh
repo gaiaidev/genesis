@@ -28,6 +28,7 @@ EX_PRUNE_ARGS+=(
   -path "$ROOT/.git/*" -prune -o
 )
 
+mkdir -p "$(dirname "$OUT")" 2>/dev/null || true
 echo "== NO-PADDING AUDIT ==" > "$OUT"
 {
   echo "root: $ROOT"
